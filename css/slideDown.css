@@ -1,0 +1,18 @@
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+header {
+  animation: slideDown 0.8s ease-out 0s both;
+}
+
+.hero-cta {
+  animation: fadeInUp 0.8s ease-out 1.3s both;
+}
