@@ -4,6 +4,7 @@
 require_once __DIR__ . '/../config/mail.php';
 
 require_once __DIR__ . '/send_resend.php';
+require_once __DIR__ . '/send_smtp.php';
 
 function app_send_email(string $to, string $subject, string $html): array
 {

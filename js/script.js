@@ -233,10 +233,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: formData,
                 });
 
+                const responseText = await response.text();
                 let data;
                 try {
-                    data = await response.json();
-                } catch {
+                    data = JSON.parse(responseText);
+                } catch (error) {
+                    console.error('Password reset response was not JSON:', {
+                        status: response.status,
+                        body: responseText,
+                        error,
+                    });
                     alert('Server error. Please try again.');
                     return;
                 }

@@ -6,15 +6,22 @@ require 'config/app.php';
 require 'mail/send.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
+function wants_json_response(): bool
+{
+    $accept = $_SERVER['HTTP_ACCEPT'] ?? '';
+    return ($_POST['ajax'] ?? '') === '1' || stripos($accept, 'application/json') !== false;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    $success = false;
 
     if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $message = 'Invalid email.';
     } else {
         // جلوگیری از enumeration
         $message = 'If that email exists, you will receive a reset link shortly.';
+        $success = true;
 
         try {
             $stmt = $pdo->prepare('SELECT id, email FROM users WHERE email = ?');
@@ -46,12 +53,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (!$send['success']) {
                     error_log('password_reset_request: email send failed: ' . ($send['message'] ?? 'unknown'));
                     $message = $send['message'] ?? 'Could not send the email. Please try again later.';
+                    $success = false;
                 }
             }
         } catch (Throwable $e) {
             error_log('password_reset_request: ' . $e->getMessage());
             $message = 'Something went wrong. Please try again.';
+            $success = false;
         }
+    }
+
+    if (wants_json_response()) {
+        header('Content-Type: application/json; charset=UTF-8');
+        echo json_encode([
+            'success' => $success,
+            'message' => $message,
+        ], JSON_UNESCAPED_UNICODE);
+        exit;
     }
 }
 ?>
@@ -83,4 +101,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 </body>
 </html>
-
