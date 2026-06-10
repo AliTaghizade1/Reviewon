@@ -94,7 +94,56 @@ function proxied_url(string $value, string $baseUrl): string
     }
 
     $absolute = absolute_url($value, $baseUrl);
+
+    if (is_proxy_url($absolute)) {
+        return $absolute;
+    }
+
     return proxy_endpoint() . '?url=' . rawurlencode($absolute);
+}
+
+function is_proxy_url(string $value): bool
+{
+    $valueParts = parse_url($value);
+    $proxyParts = parse_url(proxy_endpoint());
+
+    if (!$valueParts || !$proxyParts) {
+        return false;
+    }
+
+    $valueHost = strtolower($valueParts['host'] ?? '');
+    $proxyHost = strtolower($proxyParts['host'] ?? '');
+    $valuePort = (string) ($valueParts['port'] ?? '');
+    $proxyPort = (string) ($proxyParts['port'] ?? '');
+    $valuePath = $valueParts['path'] ?? '';
+    $proxyPath = $proxyParts['path'] ?? '';
+    $query = $valueParts['query'] ?? '';
+
+    parse_str($query, $params);
+
+    return $valueHost === $proxyHost &&
+        $valuePort === $proxyPort &&
+        $valuePath === $proxyPath &&
+        isset($params['url']);
+}
+
+function unwrap_proxy_url(string $value): string
+{
+    $guard = 0;
+
+    while ($guard < 5 && is_proxy_url($value)) {
+        $query = parse_url($value, PHP_URL_QUERY) ?: '';
+        parse_str($query, $params);
+
+        if (empty($params['url']) || !is_string($params['url'])) {
+            break;
+        }
+
+        $value = $params['url'];
+        $guard++;
+    }
+
+    return $value;
 }
 
 function rewrite_srcset(string $value, string $baseUrl): string
@@ -166,7 +215,7 @@ if (!isset($_GET['url'])) {
     proxy_error_page('No URL provided.');
 }
 
-$url = trim($_GET['url']);
+$url = unwrap_proxy_url(trim($_GET['url']));
 $parts = parse_url($url);
 
 if (
@@ -245,16 +294,29 @@ $scriptInject = <<<JS
     const proxyEndpoint = window.location.origin + window.location.pathname;
 
     function shouldSkipUrl(value) {
-        return !value ||
+        if (!value ||
             value.startsWith('#') ||
             value.startsWith('javascript:') ||
             value.startsWith('mailto:') ||
             value.startsWith('tel:') ||
-            value.startsWith('data:');
+            value.startsWith('data:')) {
+            return true;
+        }
+
+        try {
+            const absoluteUrl = new URL(value, window.location.href);
+            const proxyUrl = new URL(proxyEndpoint);
+            return absoluteUrl.origin === proxyUrl.origin &&
+                absoluteUrl.pathname === proxyUrl.pathname &&
+                absoluteUrl.searchParams.has('url');
+        } catch (error) {
+            return false;
+        }
     }
 
     function proxyUrl(value) {
         try {
+            if (shouldSkipUrl(value)) return value;
             return proxyEndpoint + '?url=' + encodeURIComponent(new URL(value, originalUrl).href);
         } catch (error) {
             return value;
