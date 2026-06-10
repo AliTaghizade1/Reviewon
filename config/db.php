@@ -5,7 +5,8 @@ $port = 3306;
 
 $db   = 'if0_42143305_review_site_db';
 $user = 'if0_42143305';
-$pass = 'VP3G8MTF9tvE7';
+$pass = 'H5FXsP39tEsi';
+
 
 try {
     $dsn = "mysql:host={$host};port={$port};dbname={$db};charset=utf8mb4";
