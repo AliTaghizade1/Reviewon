@@ -146,6 +146,59 @@ function unwrap_proxy_url(string $value): string
     return $value;
 }
 
+function encode_iri_part(string $value): string
+{
+    return preg_replace_callback(
+        '/(?:%[0-9A-Fa-f]{2})+|[^\x21-\x7E]+/u',
+        function (array $match): string {
+            $value = $match[0];
+
+            if (preg_match('/^(?:%[0-9A-Fa-f]{2})+$/', $value)) {
+                return strtoupper($value);
+            }
+
+            return rawurlencode($value);
+        },
+        $value
+    );
+}
+
+function normalize_iri_url(string $value): string
+{
+    $value = html_entity_decode(trim($value), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $parts = parse_url($value);
+
+    if (!$parts || empty($parts['scheme']) || empty($parts['host'])) {
+        return $value;
+    }
+
+    $scheme = strtolower($parts['scheme']);
+    $host = $parts['host'];
+
+    if (function_exists('idn_to_ascii') && preg_match('/[^\x00-\x7F]/', $host)) {
+        $idnHost = idn_to_ascii($host, 0, defined('INTL_IDNA_VARIANT_UTS46') ? INTL_IDNA_VARIANT_UTS46 : 0);
+        if ($idnHost) {
+            $host = $idnHost;
+        }
+    }
+
+    $auth = '';
+    if (isset($parts['user'])) {
+        $auth = encode_iri_part($parts['user']);
+        if (isset($parts['pass'])) {
+            $auth .= ':' . encode_iri_part($parts['pass']);
+        }
+        $auth .= '@';
+    }
+
+    $port = isset($parts['port']) ? ':' . $parts['port'] : '';
+    $path = isset($parts['path']) ? encode_iri_part($parts['path']) : '';
+    $query = isset($parts['query']) ? '?' . encode_iri_part($parts['query']) : '';
+    $fragment = isset($parts['fragment']) ? '#' . encode_iri_part($parts['fragment']) : '';
+
+    return $scheme . '://' . $auth . $host . $port . $path . $query . $fragment;
+}
+
 function rewrite_srcset(string $value, string $baseUrl): string
 {
     $candidates = explode(',', $value);
@@ -215,7 +268,7 @@ if (!isset($_GET['url'])) {
     proxy_error_page('No URL provided.');
 }
 
-$url = unwrap_proxy_url(trim($_GET['url']));
+$url = normalize_iri_url(unwrap_proxy_url(trim($_GET['url'])));
 $parts = parse_url($url);
 
 if (

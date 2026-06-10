@@ -73,6 +73,7 @@ $isOwner = ($site['owner_id'] === $_SESSION['user_id']);
 
         <!-- سایدبار کامنت‌ها (فعلا خالی، در فاز ۳ پر می‌شود) -->
         <aside class="sidebar">
+            <div class="space-4"></div>
             <h3 style="display: flex; justify-content: space-between; align-items: canter;">Comments
                     <select id="commentFilter">
                     <option value="current" selected>Current Page</option>
