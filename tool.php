@@ -155,9 +155,9 @@ $isOwner = ($site['owner_id'] === $_SESSION['user_id']);
 
     <script>
         // ارسال اطلاعات سایت به جاوااسکریپت
-        var SITE_ID = "<?php echo $siteId; ?>";
-        var CURRENT_USER_ID = "<?php echo $currentUserId; ?>";
-        var SITE_URL = "<?php echo $site['url']; ?>";
+        var SITE_ID = <?php echo json_encode($siteId); ?>;
+        var CURRENT_USER_ID = <?php echo json_encode($currentUserId); ?>;
+        var SITE_URL = <?php echo json_encode($site['url']); ?>;
     </script>
 
     <script>

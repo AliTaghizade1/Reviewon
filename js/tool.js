@@ -850,7 +850,7 @@ function renderPins() {
             const iframeSrc = iframe.src;
             if (iframeSrc.includes('?url=')) {
                 const urlParams = new URLSearchParams(iframeSrc.split('?')[1]);
-                const realUrl = decodeURIComponent(urlParams.get('url'));
+                const realUrl = urlParams.get('url');
                 if (realUrl) {
                     SITE_URL = realUrl;
                     console.log('--- [2] Extracted Real URL for SITE_URL:', SITE_URL);
@@ -903,7 +903,7 @@ function renderPins() {
                     } else {
                         // اگر لینک Absolute معمولی است، آن را پروکسی کن
                         console.log('--- [5] Proxying Absolute Link...');
-                        iframe.src = 'proxy.php?url=' + targetHref;
+                        iframe.src = 'proxy.php?url=' + encodeURIComponent(targetHref);
                     }
                     return;
                 }
@@ -935,7 +935,7 @@ function renderPins() {
                     
                     // ✅ نکته: لینک‌های Relative نباید شامل proxy.php باشند، پس همیشه پروکسی می‌شوند
                     console.log('--- [8] Proxying Relative Link to:', 'proxy.php?url=' + finalUrl);
-                    iframe.src = 'proxy.php?url=' + finalUrl;
+                    iframe.src = 'proxy.php?url=' + encodeURIComponent(finalUrl);
                     
                 } catch (err) {
                     console.error('Error building URL:', err);
