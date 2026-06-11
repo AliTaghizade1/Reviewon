@@ -376,14 +376,40 @@ function renderPins() {
         const currentUrlNormalized = normalizeUrl(SITE_URL);
         const commentUrlNormalized = normalizeUrl(comment.url);
 
+        // --- helper: extract real url (non-proxy) ---
+        function extractRealUrl(maybeProxyUrl) {
+            if (!maybeProxyUrl || typeof maybeProxyUrl !== 'string') return '';
+            // اگر خودش proxy.php باشد
+            if (maybeProxyUrl.includes('proxy.php?url=')) {
+                try {
+                    const q = maybeProxyUrl.split('?')[1] || '';
+                    const params = new URLSearchParams(q);
+                    return params.get('url') || '';
+                } catch (e) {
+                    return '';
+                }
+            }
+            return maybeProxyUrl;
+        }
+
+        // --- helper: build proxy iframe src from a real url ---
+        function ensureProxySrc(maybeRealOrProxyUrl) {
+            const realUrl = extractRealUrl(maybeRealOrProxyUrl);
+            if (!realUrl) return maybeRealOrProxyUrl; // fallback
+            // همیشه iframe را از طریق proxy لود کن
+            return 'proxy.php?url=' + encodeURIComponent(realUrl);
+        }
+
         // ✅ ۱. بررسی URL: اگر کامنت مربوط به صفحه دیگری است
         if (commentUrlNormalized !== currentUrlNormalized) {
-            // آدرس آی‌فریم را عوض کن
-            iframe.src = comment.url;
-            
-            // ✅ مهم: آپدیت فوری متغیر سراسری SITE_URL
-            window.SITE_URL = comment.url;
-            
+            const realTargetUrl = extractRealUrl(comment.url) || comment.url;
+
+            // آدرس آی‌فریم را عوض کن (همیشه از طریق proxy)
+            iframe.src = ensureProxySrc(realTargetUrl);
+
+            // مهم: متغیر سراسری باید URL واقعی (non-proxy) باشد
+            window.SITE_URL = realTargetUrl;
+
             // صبر کن تا صفحه جدید لود شود
             iframe.onload = function() {
                 // بعد از لود، دستگاه را چک کن و اسکرول کن
@@ -391,15 +417,14 @@ function renderPins() {
                     const targetBtn = document.querySelector(`.device-btn[data-device="${comment.device_type}"]`);
                     if (targetBtn) targetBtn.click();
                 }
-                
-                // تاخیر کوتاه برای رندر کامل DOM
+
                 setTimeout(() => {
                     const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
                     try {
                         const element = iframeDoc.querySelector(comment.selector);
                         if (element) {
                             element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            renderPins(); // پین‌های صفحه جدید را رسم کن
+                            renderPins();
                             const pin = element.querySelector('.rs-pin');
                             if (pin) {
                                 showCommentPopup(pin, comment);
