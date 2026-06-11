@@ -324,7 +324,17 @@ function formatDate(dateString) {
     // --- 3. Render Pins (با مختصات دقیق) ---
 
 function renderPins() {
-    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+    // If iframe becomes cross-origin, accessing contentDocument throws SecurityError.
+    // In that case, we skip pin rendering.
+    let iframeDoc = null;
+    try {
+        iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+    } catch (e) {
+        return;
+    }
+
+    if (!iframeDoc) return;
+
     const oldPins = iframeDoc.querySelectorAll('.rs-pin');
     oldPins.forEach(p => p.remove());
     const currentDevice = document.querySelector('.device-btn.active').dataset.device;
@@ -402,7 +412,15 @@ function renderPins() {
 
         // ✅ ۱. بررسی URL: اگر کامنت مربوط به صفحه دیگری است
         if (commentUrlNormalized !== currentUrlNormalized) {
-            const realTargetUrl = extractRealUrl(comment.url) || comment.url;
+            // IMPORTANT: comment.url ممکن است مستقیماً URL واقعی نباشد.
+            // در ابزارهای شما ممکن است url به proxy.php یا حتی url proxy شده‌ی proxy برسد.
+            // بنابراین همیشه unwrap proxy انجام می‌دهیم و سپس مجدد با url واقعی، iframe را از طریق proxy لود می‌کنیم.
+            let realTargetUrl = extractRealUrl(comment.url) || comment.url;
+
+            // اگر realTargetUrl خودش proxy.php باشد (مثلاً چون قبلاً چیزی شبیه proxy.php?url=... ذخیره شده)، دوباره unwrap می‌کنیم.
+            if (typeof realTargetUrl === 'string' && realTargetUrl.includes('proxy.php?url=')) {
+                realTargetUrl = extractRealUrl(realTargetUrl) || realTargetUrl;
+            }
 
             // آدرس آی‌فریم را عوض کن (همیشه از طریق proxy)
             iframe.src = ensureProxySrc(realTargetUrl);
@@ -419,7 +437,14 @@ function renderPins() {
                 }
 
                 setTimeout(() => {
-                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    let iframeDoc;
+                    try {
+                        iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    } catch (e) {
+                        // cross-origin: اجازه دسترسی به doc نداریم
+                        return;
+                    }
+
                     try {
                         const element = iframeDoc.querySelector(comment.selector);
                         if (element) {
