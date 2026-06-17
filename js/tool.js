@@ -473,6 +473,7 @@ function renderPins() {
                         const element = iframeDoc.querySelector(comment.selector);
                         if (element) {
                             element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            renderPins();
                             const pin = element.querySelector('.rs-pin');
                             if (pin) {
                                 showCommentPopup(pin, comment);
@@ -490,6 +491,7 @@ function renderPins() {
             const element = iframeDoc.querySelector(comment.selector);
             if (element) {
                 element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                renderPins();
                 const pin = element.querySelector('.rs-pin');
                 if (pin) {
                     showCommentPopup(pin, comment);
@@ -621,6 +623,7 @@ function renderPins() {
     
     popup.style.left = leftPos + 'px';
     popup.style.top = topPos + 'px';
+    popup.style.visibility = 'visible';
 
     // --- افزودن رویداد برای دکمه ریپلای ---
     const replyInput = popup.querySelector('#replyInput');
