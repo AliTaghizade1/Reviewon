@@ -186,7 +186,7 @@ $isOwner = ($site['owner_id'] === $_SESSION['user_id']);
         </div>
     </div>
 
-    <script src="js/tool.js"></script>
+    <script src="js/tool.js?v=<?php echo filemtime(__DIR__ . '/js/tool.js'); ?>"></script>
     
 </body>
 </html>

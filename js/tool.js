@@ -324,6 +324,30 @@ function formatDate(dateString) {
 
     // --- 3. Render Pins (با مختصات دقیق) ---
 
+function createCommentPin(iframeDoc, element, comment) {
+    element.style.position = 'relative';
+    const pin = iframeDoc.createElement('div');
+    pin.className = 'rs-pin';
+    pin.innerHTML = '📍';
+    pin.title = comment.content;
+    const topPos = comment.offset_y != 0 ? comment.offset_y + 'px' : '-5px';
+    const leftPos = comment.offset_x != 0 ? comment.offset_x + 'px' : '-10px';
+    pin.style.position = 'absolute';
+    pin.style.top = topPos;
+    pin.style.left = leftPos;
+    pin.style.fontSize = '20px';
+    pin.style.cursor = 'pointer';
+    pin.style.zIndex = '9999';
+    pin.style.transition = 'transform 0.2s';
+    pin.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        scrollToComment(comment);
+    });
+    element.appendChild(pin);
+    return pin;
+}
+
 function renderPins() {
     // If iframe becomes cross-origin, accessing contentDocument throws SecurityError.
     // In that case, we skip pin rendering.
@@ -342,32 +366,14 @@ function renderPins() {
     
     allComments.forEach(comment => {
         // ✅ تغییر: شرط URL اضافه شد. فقط اگر URL کامنت با URL فعلی یکی بود، آیکون را نشان بده
-        if (comment.url === SITE_URL && 
+        if (normalizeUrl(comment.url) === normalizeUrl(SITE_URL) && 
             comment.device_type === currentDevice && 
             comment.is_resolved === 0 && 
             comment.parent_comment_id === null) {
             try {
                 const element = iframeDoc.querySelector(comment.selector);
                 if (element) {
-                    element.style.position = 'relative';
-                    const pin = document.createElement('div');
-                    pin.className = 'rs-pin';
-                    pin.innerHTML = '📍';
-                    pin.title = comment.content;
-                    const topPos = comment.offset_y != 0 ? comment.offset_y + 'px' : '-5px';
-                    const leftPos = comment.offset_x != 0 ? comment.offset_x + 'px' : '-10px';
-                    pin.style.position = 'absolute';
-                    pin.style.top = topPos;
-                    pin.style.left = leftPos;
-                    pin.style.fontSize = '20px';
-                    pin.style.cursor = 'pointer';
-                    pin.style.zIndex = '9999';
-                    pin.style.transition = 'transform 0.2s';
-                    pin.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        scrollToComment(comment);
-                    });
-                    element.appendChild(pin);
+                    createCommentPin(iframeDoc, element, comment);
                 }
             } catch (err) { console.error(err); }
         }
@@ -382,10 +388,17 @@ function renderPins() {
         
         // ✅ نکته مهم: نرمال‌سازی URLها برای مقایسه دقیق
         // گاهی اوقات آدرس‌ها با / و گاهی بدون / هستند، آن‌ها را یکسان می‌کنیم
-        const normalizeUrl = (url) => url.endsWith('/') ? url.slice(0, -1) : url;
+        const normalizeCommentUrl = (url) => {
+            if (!url) return '';
+            let normalized = url.endsWith('/') ? url.slice(0, -1) : url;
+            if (normalized.includes('?')) {
+                normalized = normalized.split('?')[0];
+            }
+            return normalized.replace(/^https?:\/\//, '');
+        };
         
-        const currentUrlNormalized = normalizeUrl(SITE_URL);
-        const commentUrlNormalized = normalizeUrl(comment.url);
+        const currentUrlNormalized = normalizeCommentUrl(SITE_URL);
+        const commentUrlNormalized = normalizeCommentUrl(comment.url);
 
         // --- helper: extract real url (non-proxy) ---
         function extractRealUrl(maybeProxyUrl) {
@@ -451,7 +464,8 @@ function renderPins() {
                         if (element) {
                             element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             renderPins();
-                            const pin = element.querySelector('.rs-pin');
+                            let pin = element.querySelector('.rs-pin');
+                            if (!pin) pin = createCommentPin(iframeDoc, element, comment);
                             if (pin) {
                                 showCommentPopup(pin, comment);
                             }
@@ -474,7 +488,8 @@ function renderPins() {
                         if (element) {
                             element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             renderPins();
-                            const pin = element.querySelector('.rs-pin');
+                            let pin = element.querySelector('.rs-pin');
+                            if (!pin) pin = createCommentPin(iframeDoc, element, comment);
                             if (pin) {
                                 showCommentPopup(pin, comment);
                             }
@@ -492,7 +507,8 @@ function renderPins() {
             if (element) {
                 element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 renderPins();
-                const pin = element.querySelector('.rs-pin');
+                let pin = element.querySelector('.rs-pin');
+                if (!pin) pin = createCommentPin(iframeDoc, element, comment);
                 if (pin) {
                     showCommentPopup(pin, comment);
                 }
@@ -509,7 +525,7 @@ function renderPins() {
     oldPopups.forEach(p => p.remove());
     
     // ساخت پاپ‌آپ
-    const popup = document.createElement('div');
+    const popup = iframeDoc.createElement('div');
     popup.className = 'rs-comment-popup';
     
     // استایل‌های پایه
@@ -600,14 +616,11 @@ function renderPins() {
     const popupWidth = popup.offsetWidth;
     const popupHeight = popup.offsetHeight;
     const popupOffset = 5;
-    const targetElement = pinElement.parentElement;
-    const targetRect = targetElement.getBoundingClientRect();
+    const targetRect = pinElement.getBoundingClientRect();
     const scrollTop = iframeDoc.documentElement.scrollTop || iframeDoc.body.scrollTop;
     const scrollLeft = iframeDoc.documentElement.scrollLeft || iframeDoc.body.scrollLeft;
-    const elementDocLeft = targetRect.left + scrollLeft;
-    const elementDocTop = targetRect.top + scrollTop;
-    const pinLeft = elementDocLeft + parseInt(commentData.offset_x);
-    const pinTop = elementDocTop + parseInt(commentData.offset_y);
+    const pinLeft = targetRect.left + scrollLeft + (targetRect.width / 2);
+    const pinTop = targetRect.top + scrollTop;
     let leftPos = pinLeft - (popupWidth / 2);
     
     if (leftPos + popupWidth > iframeDoc.body.scrollWidth) {
@@ -768,7 +781,7 @@ function renderPins() {
         .then(data => {
             if (data.success) {
                 // ساخت دوباره div متن اصلی با ID اختصاصی
-                const newDiv = document.createElement('div');
+                const newDiv = iframeDoc.createElement('div');
                 newDiv.id = 'mainCommentText'; // ✅ مهم: تنظیم مجدد ID
                 newDiv.textContent = newText;
                 newDiv.style.marginBottom = '8px';
@@ -803,7 +816,7 @@ function renderPins() {
             // ✅ تغییر: استفاده از ID برای پیدا کردن دقیق متن اصلی
             const commentTextDiv = popup.querySelector('#mainCommentText'); 
             
-            const input = document.createElement('textarea');
+            const input = iframeDoc.createElement('textarea');
             input.className = 'comment-edit';
             input.type = 'text';
             input.value = commentTextDiv.textContent;
@@ -834,12 +847,14 @@ function renderPins() {
     }
     
     // بستن پاپ‌آپ با کلیک بیرون
-    iframeDoc.addEventListener('click', function closePopup(event) {
-        if (!popup.contains(event.target) && !pinElement.contains(event.target)) {
-            popup.remove();
-            iframeDoc.removeEventListener('click', closePopup);
-        }
-    });
+    setTimeout(() => {
+        iframeDoc.addEventListener('click', function closePopup(event) {
+            if (!popup.contains(event.target) && !pinElement.contains(event.target)) {
+                popup.remove();
+                iframeDoc.removeEventListener('click', closePopup);
+            }
+        });
+    }, 0);
 }
 
 
