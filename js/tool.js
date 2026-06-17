@@ -162,8 +162,12 @@ function normalizeUrl(url) {
             if (response.success) {
                 allComments = response.data;
                 renderSidebar();
-                renderPins();
-                return response.data; // این خط اضافه شده
+
+                // برای جلوگیری از حالتی که پین‌ها قبل از آماده شدن iframe آماده نیستند:
+                setTimeout(() => {
+                    renderPins();
+                }, 150);
+                return response.data;
             }
         });
 }
