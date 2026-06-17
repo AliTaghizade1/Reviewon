@@ -596,28 +596,37 @@ function renderPins() {
     // --- محاسبات موقعیت (بدون تغییر) ---
     const popupWidth = popup.offsetWidth;
     const popupHeight = popup.offsetHeight;
-    const popupOffset = 5;
-    const targetElement = pinElement.parentElement;
-    const targetRect = targetElement.getBoundingClientRect();
+    const popupOffset = 8; // کمی فاصله از پین
+
+    // ✅ موقعیت را فقط از روی خود پین حساب می‌کنیم (rect در همان iframe viewport)
+    const targetRect = pinElement.getBoundingClientRect();
+
     const scrollTop = iframeDoc.documentElement.scrollTop || iframeDoc.body.scrollTop;
     const scrollLeft = iframeDoc.documentElement.scrollLeft || iframeDoc.body.scrollLeft;
-    const elementDocLeft = targetRect.left + scrollLeft;
-    const elementDocTop = targetRect.top + scrollTop;
-    const pinLeft = elementDocLeft + parseInt(commentData.offset_x);
-    const pinTop = elementDocTop + parseInt(commentData.offset_y);
-    let leftPos = pinLeft - (popupWidth / 2);
-    
-    if (leftPos + popupWidth > iframeDoc.body.scrollWidth) {
-        leftPos = pinLeft - popupWidth + 10;
-    } else if (leftPos < 0) {
-        leftPos = 10;
+
+    // تبدیل به مختصات document داخل iframe
+    const pinLeft = (targetRect.left + scrollLeft);
+    const pinTop = (targetRect.top + scrollTop);
+
+    // چپ/راست: popup را وسط پین می‌گذاریم
+    let leftPos = pinLeft + (parseInt(commentData.offset_x) || 0) - (popupWidth / 2);
+
+    // بالا/پایین: اول تلاش برای بالا (بالای پین)
+    let topPos = pinTop + (parseInt(commentData.offset_y) || 0) - popupHeight - popupOffset;
+
+    const maxLeft = (iframeDoc.documentElement.scrollWidth || iframeDoc.body.scrollWidth) - popupWidth - 10;
+    const minLeft = 10;
+    leftPos = Math.max(minLeft, Math.min(leftPos, maxLeft));
+
+    const minTop = scrollTop + 10;
+    const maxTop = (scrollTop + (iframeDoc.documentElement.clientHeight || window.innerHeight)) - popupHeight - 10;
+
+    if (topPos < minTop) {
+        // اگر رفت بالا بیرون، می‌گذاریم پایین پین
+        topPos = pinTop + (parseInt(commentData.offset_y) || 0) + popupOffset + 10;
     }
-    let topPos = pinTop - popupHeight - popupOffset;
-    
-    if (topPos < scrollTop) {
-        topPos = pinTop + 20 + popupOffset;
-    }
-    
+    topPos = Math.max(minTop, Math.min(topPos, maxTop));
+
     popup.style.left = leftPos + 'px';
     popup.style.top = topPos + 'px';
     popup.style.visibility = 'visible';
