@@ -47,7 +47,7 @@ usort($allSites, function($a, $b) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Reviewon</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=<?php echo filemtime(__DIR__ . '/css/style.css'); ?>">
 </head>
 
 <body>
@@ -79,10 +79,18 @@ usort($allSites, function($a, $b) {
                         <?php
                         $domain = parse_url($site['url'], PHP_URL_HOST);
                         $displayUrl = $domain ? $domain : $site['url'];
+                        $previewUrl = 'proxy.php?url=' . urlencode($site['url']);
                         ?>
                         <div class="site-preview">
-                            <img src="proxy.php?url=<?php echo urlencode($site['url']); ?>&preview=1&size=300x200" alt="<?php echo htmlspecialchars($domain); ?>" class="site-screenshot" loading="lazy" onerror="this.onerror=null; this.src='image/preview-fallback.svg';">
-                            <div class="preview-fallback">🌐 <?php echo htmlspecialchars(substr($displayUrl, 0, 15)); ?>...</div>
+                            <iframe
+                                class="site-preview-frame"
+                                src="<?php echo htmlspecialchars($previewUrl, ENT_QUOTES, 'UTF-8'); ?>"
+                                title="Preview of <?php echo htmlspecialchars($displayUrl, ENT_QUOTES, 'UTF-8'); ?>"
+                                loading="lazy"
+                                tabindex="-1"
+                                referrerpolicy="no-referrer"
+                            ></iframe>
+                            <div class="preview-label"><?php echo htmlspecialchars($displayUrl); ?></div>
                         </div>
                         <h3 title="<?php echo htmlspecialchars($site['url']); ?>"><?php echo htmlspecialchars($displayUrl); ?></h3>
                         <div class="site-actions">

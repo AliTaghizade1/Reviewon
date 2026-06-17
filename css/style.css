@@ -407,24 +407,37 @@ input:focus, textarea:focus {
   margin-bottom: 1rem;
   border-radius: 16px;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--glass-bg), rgba(59,130,246,0.08));
+  background: linear-gradient(135deg, #e5eefb, #f8fafc);
   border: 2px solid var(--glass-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
   transition: var(--transition);
 }
 
-.site-preview img {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  object-fit: cover;
-  box-shadow: var(--shadow-md);
+.site-preview-frame {
+  width: 1200px;
+  height: 800px;
+  border: 0;
+  pointer-events: none;
+  transform: scale(0.25);
+  transform-origin: top left;
+  background: white;
 }
 
-.site-preview:hover img {
-  transform: scale(1.15);
+.preview-label {
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.76);
+  color: white;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: var(--shadow-sm);
 }
 
 .site-card:hover .site-preview {
@@ -1270,5 +1283,4 @@ iframe {
     padding: 0 1rem;
   }
 }
-
 
