@@ -492,7 +492,8 @@ function renderPins() {
                 element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 const pin = element.querySelector('.rs-pin');
                 if (pin) {
-                    showCommentPopup(pin, comment);
+                    // مطمئن شو پاپ‌آپ بعد از رندر پین ساخته می‌شود
+                    setTimeout(() => showCommentPopup(pin, comment), 0);
                 }
             }
         } catch (e) { console.error(e); }
