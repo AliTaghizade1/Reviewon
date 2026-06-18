@@ -325,32 +325,39 @@ function formatDate(dateString) {
     // --- 3. Render Pins (با مختصات دقیق) ---
 
 function createCommentPin(iframeDoc, element, comment) {
-    element.style.position = 'relative';
     const pin = iframeDoc.createElement('div');
     pin.className = 'rs-pin';
     pin.dataset.commentId = comment.id;
     pin.innerHTML = '📍';
     pin.title = comment.content;
-    const topPos = comment.offset_y != 0 ? comment.offset_y + 'px' : '-5px';
-    const leftPos = comment.offset_x != 0 ? comment.offset_x + 'px' : '-10px';
+    const targetRect = element.getBoundingClientRect();
+    const scrollTop = iframeDoc.documentElement.scrollTop || iframeDoc.body.scrollTop;
+    const scrollLeft = iframeDoc.documentElement.scrollLeft || iframeDoc.body.scrollLeft;
+    const offsetX = parseInt(comment.offset_x, 10) || 0;
+    const offsetY = parseInt(comment.offset_y, 10) || 0;
+    const topPos = targetRect.top + scrollTop + offsetY;
+    const leftPos = targetRect.left + scrollLeft + offsetX;
+
     pin.style.position = 'absolute';
-    pin.style.top = topPos;
-    pin.style.left = leftPos;
+    pin.style.top = topPos + 'px';
+    pin.style.left = leftPos + 'px';
     pin.style.fontSize = '20px';
     pin.style.cursor = 'pointer';
     pin.style.zIndex = '9999';
     pin.style.transition = 'transform 0.2s';
+    pin.style.lineHeight = '1';
+    pin.style.transform = 'translate(-50%, -100%)';
     pin.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
         scrollToComment(comment);
     });
-    element.appendChild(pin);
+    iframeDoc.body.appendChild(pin);
     return pin;
 }
 
-function getCommentPin(element, comment) {
-    return Array.from(element.querySelectorAll('.rs-pin')).find(pin => {
+function getCommentPin(iframeDoc, comment) {
+    return Array.from(iframeDoc.querySelectorAll('.rs-pin')).find(pin => {
         return String(pin.dataset.commentId) === String(comment.id);
     });
 }
@@ -522,7 +529,7 @@ function renderPins() {
                         if (element) {
                             element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             renderPins();
-                            let pin = getCommentPin(element, comment);
+                            let pin = getCommentPin(iframeDoc, comment);
                             if (!pin) pin = createCommentPin(iframeDoc, element, comment);
                             if (pin) {
                                 showCommentPopup(pin, comment);
@@ -546,7 +553,7 @@ function renderPins() {
                         if (element) {
                             element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             renderPins();
-                            let pin = getCommentPin(element, comment);
+                            let pin = getCommentPin(iframeDoc, comment);
                             if (!pin) pin = createCommentPin(iframeDoc, element, comment);
                             if (pin) {
                                 showCommentPopup(pin, comment);
@@ -565,7 +572,7 @@ function renderPins() {
             if (element) {
                 element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 renderPins();
-                let pin = getCommentPin(element, comment);
+                let pin = getCommentPin(iframeDoc, comment);
                 if (!pin) pin = createCommentPin(iframeDoc, element, comment);
                 if (pin) {
                     showCommentPopup(pin, comment);
