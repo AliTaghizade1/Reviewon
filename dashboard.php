@@ -29,6 +29,24 @@ $sharedSites = $stmtShared->fetchAll();
 // ترکیب
 $allSites = array_merge($ownedSites, $sharedSites);
 
+function site_display_name(string $url): string
+{
+    $host = parse_url($url, PHP_URL_HOST) ?: $url;
+    $host = preg_replace('/^www\./i', '', strtolower($host));
+    $parts = array_values(array_filter(explode('.', $host)));
+
+    if (count($parts) >= 3 && strlen(end($parts)) === 2) {
+        $name = $parts[count($parts) - 3];
+    } elseif (count($parts) >= 2) {
+        $name = $parts[count($parts) - 2];
+    } else {
+        $name = $parts[0] ?? $host;
+    }
+
+    $name = str_replace(['-', '_'], ' ', $name);
+    return ucwords($name);
+}
+
 // ✅ Fix: مطمئن شو created_at درست convert می‌شه
 usort($allSites, function($a, $b) {
     // اگر created_at خالیه، unix timestamp 0 بذار
@@ -79,6 +97,7 @@ usort($allSites, function($a, $b) {
                         <?php
                         $domain = parse_url($site['url'], PHP_URL_HOST);
                         $displayUrl = $domain ? $domain : $site['url'];
+                        $displayName = site_display_name($site['url']);
                         $previewUrl = 'proxy.php?url=' . urlencode($site['url']);
                         ?>
                         <div class="site-preview">
@@ -92,7 +111,7 @@ usort($allSites, function($a, $b) {
                             ></iframe>
                             <div class="preview-label"><?php echo htmlspecialchars($displayUrl); ?></div>
                         </div>
-                        <h3 title="<?php echo htmlspecialchars($site['url']); ?>"><?php echo htmlspecialchars($displayUrl); ?></h3>
+                        <h3 title="<?php echo htmlspecialchars($site['url']); ?>"><?php echo htmlspecialchars($displayName); ?></h3>
                         <div class="site-actions">
                             <a href="tool.php?id=<?php echo $site['id']; ?>" class="btn-secondary">Open</a>
                             <?php if ($site['owner_id'] === $userId): ?>

@@ -355,6 +355,57 @@ function getCommentPin(element, comment) {
     });
 }
 
+function cssEscape(value, iframeDoc) {
+    const css = iframeDoc.defaultView && iframeDoc.defaultView.CSS;
+    if (css && typeof css.escape === 'function') {
+        return css.escape(value);
+    }
+
+    return String(value).replace(/[^a-zA-Z0-9_-]/g, '\\$&');
+}
+
+function escapeLegacySelector(selector, iframeDoc) {
+    return selector.split(' > ').map(part => {
+        const trimmed = part.trim();
+        if (!trimmed) return trimmed;
+
+        const idIndex = trimmed.indexOf('#');
+        const classIndex = trimmed.indexOf('.');
+        const splitIndex = [idIndex, classIndex].filter(index => index !== -1).sort((a, b) => a - b)[0];
+        const tagName = splitIndex === undefined ? trimmed : trimmed.slice(0, splitIndex);
+        const rest = splitIndex === undefined ? '' : trimmed.slice(splitIndex);
+
+        if (rest.startsWith('#')) {
+            return tagName + '#' + cssEscape(rest.slice(1), iframeDoc);
+        }
+
+        if (rest.startsWith('.')) {
+            return tagName + rest.slice(1).split('.').filter(Boolean).map(className => {
+                return '.' + cssEscape(className, iframeDoc);
+            }).join('');
+        }
+
+        return trimmed;
+    }).join(' > ');
+}
+
+function getCommentElement(iframeDoc, comment) {
+    if (!comment.selector) return null;
+
+    try {
+        const element = iframeDoc.querySelector(comment.selector);
+        if (element) return element;
+    } catch (e) {}
+
+    try {
+        const escapedSelector = escapeLegacySelector(comment.selector, iframeDoc);
+        return iframeDoc.querySelector(escapedSelector);
+    } catch (e) {
+        console.error('Could not resolve comment selector:', comment.selector, e);
+        return null;
+    }
+}
+
 function renderPins() {
     // If iframe becomes cross-origin, accessing contentDocument throws SecurityError.
     // In that case, we skip pin rendering.
@@ -378,7 +429,7 @@ function renderPins() {
             comment.is_resolved === 0 && 
             comment.parent_comment_id === null) {
             try {
-                const element = iframeDoc.querySelector(comment.selector);
+                const element = getCommentElement(iframeDoc, comment);
                 if (element) {
                     createCommentPin(iframeDoc, element, comment);
                 }
@@ -467,7 +518,7 @@ function renderPins() {
                     }
 
                     try {
-                        const element = iframeDoc.querySelector(comment.selector);
+                        const element = getCommentElement(iframeDoc, comment);
                         if (element) {
                             element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             renderPins();
@@ -491,7 +542,7 @@ function renderPins() {
                 setTimeout(() => {
                     const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
                     try {
-                        const element = iframeDoc.querySelector(comment.selector);
+                        const element = getCommentElement(iframeDoc, comment);
                         if (element) {
                             element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             renderPins();
@@ -510,7 +561,7 @@ function renderPins() {
         // اسکرول معمولی
         const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
         try {
-            const element = iframeDoc.querySelector(comment.selector);
+            const element = getCommentElement(iframeDoc, comment);
             if (element) {
                 element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 renderPins();
@@ -1102,21 +1153,33 @@ function renderPins() {
 
     // Helper: Generate CSS Selector
     function getCssSelector(element) {
-        if (element.id) return '#' + element.id;
+        const iframeDoc = element.ownerDocument || document;
+        if (element.id) return '#' + cssEscape(element.id, iframeDoc);
+
         let path = [];
-        while (element.nodeType === Node.ELEMENT_NODE) {
+        while (element && element.nodeType === Node.ELEMENT_NODE) {
             let selector = element.nodeName.toLowerCase();
             if (element.id) {
-                selector += '#' + element.id;
+                selector += '#' + cssEscape(element.id, iframeDoc);
                 path.unshift(selector);
                 break;
-            } else {
-                if (element.className) {
-                    selector += '.' + element.className.split(' ').join('.');
-                }
-                path.unshift(selector);
-                element = element.parentNode;
             }
+
+            const parent = element.parentElement;
+            if (parent) {
+                const sameTagSiblings = Array.from(parent.children).filter(child => {
+                    return child.nodeName.toLowerCase() === selector;
+                });
+
+                if (sameTagSiblings.length > 1) {
+                    selector += `:nth-of-type(${sameTagSiblings.indexOf(element) + 1})`;
+                }
+            }
+
+            path.unshift(selector);
+
+            if (selector === 'html') break;
+            element = parent;
         }
         return path.join(' > ');
     }
