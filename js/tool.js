@@ -328,6 +328,7 @@ function createCommentPin(iframeDoc, element, comment) {
     element.style.position = 'relative';
     const pin = iframeDoc.createElement('div');
     pin.className = 'rs-pin';
+    pin.dataset.commentId = comment.id;
     pin.innerHTML = '📍';
     pin.title = comment.content;
     const topPos = comment.offset_y != 0 ? comment.offset_y + 'px' : '-5px';
@@ -346,6 +347,12 @@ function createCommentPin(iframeDoc, element, comment) {
     });
     element.appendChild(pin);
     return pin;
+}
+
+function getCommentPin(element, comment) {
+    return Array.from(element.querySelectorAll('.rs-pin')).find(pin => {
+        return String(pin.dataset.commentId) === String(comment.id);
+    });
 }
 
 function renderPins() {
@@ -464,7 +471,7 @@ function renderPins() {
                         if (element) {
                             element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             renderPins();
-                            let pin = element.querySelector('.rs-pin');
+                            let pin = getCommentPin(element, comment);
                             if (!pin) pin = createCommentPin(iframeDoc, element, comment);
                             if (pin) {
                                 showCommentPopup(pin, comment);
@@ -488,7 +495,7 @@ function renderPins() {
                         if (element) {
                             element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             renderPins();
-                            let pin = element.querySelector('.rs-pin');
+                            let pin = getCommentPin(element, comment);
                             if (!pin) pin = createCommentPin(iframeDoc, element, comment);
                             if (pin) {
                                 showCommentPopup(pin, comment);
@@ -507,7 +514,7 @@ function renderPins() {
             if (element) {
                 element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 renderPins();
-                let pin = element.querySelector('.rs-pin');
+                let pin = getCommentPin(element, comment);
                 if (!pin) pin = createCommentPin(iframeDoc, element, comment);
                 if (pin) {
                     showCommentPopup(pin, comment);
