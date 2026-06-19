@@ -177,10 +177,10 @@ usort($allSites, function($a, $b) {
 
     <!-- Desktop-only Access Modal -->
     <div id="desktopOnlyModal" class="modal" aria-hidden="true" style="display:none; overflow:hidden; z-index: 100000;">
-        <div class="modal-content" style="max-width: 520px; text-align: center; margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
+        <div class="modal-content" style="max-width: 520px; text-align: center; margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) !important;">
             <span class="close" onclick="closeModal('desktopOnlyModal')" aria-label="Close">&times;</span>
-            <h2 style="margin-top: 0;">Desktop only</h2>
-            <p style="margin: 1rem 0 1.5rem; color: var(--text-secondary);">This section is available only on desktop devices.</p>
+            <h2 style="margin-top: 0;">Desktop access only</h2>
+            <p style="margin: 1rem 0 1.5rem; color: var(--text-secondary);">This page is available only on desktop devices.</p>
 
             <div style="display:flex; justify-content:center; gap: 12px; flex-wrap: wrap;">
                 <a href="logout.php" class="btn-secondary" style="text-decoration:none;">Back to Home</a>
