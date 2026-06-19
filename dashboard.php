@@ -176,7 +176,7 @@ usort($allSites, function($a, $b) {
     </div>
 
     <!-- Desktop-only Access Modal -->
-    <div id="desktopOnlyModal" class="modal" aria-hidden="true" style="display:none; overflow:hidden;">
+    <div id="desktopOnlyModal" class="modal" aria-hidden="true" style="display:none; overflow:hidden; z-index: 100000;">
         <div class="modal-content" style="max-width: 520px; text-align: center; margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
             <span class="close" onclick="closeModal('desktopOnlyModal')" aria-label="Close">&times;</span>
             <h2 style="margin-top: 0;">Desktop only</h2>
@@ -187,6 +187,38 @@ usort($allSites, function($a, $b) {
             </div>
         </div>
     </div>
+
+    <!-- Prevent scrolling while the modal is shown -->
+    <script>
+        (function () {
+            const modal = document.getElementById('desktopOnlyModal');
+            if (!modal) return;
+
+            const originalClose = window.closeModal;
+            window.closeModal = function (modalId) {
+                if (modalId === 'desktopOnlyModal') {
+                    document.documentElement.style.overflow = '';
+                    document.body.style.overflow = '';
+                }
+                if (typeof originalClose === 'function') return originalClose(modalId);
+                const el = document.getElementById(modalId);
+                if (el) el.style.display = 'none';
+            };
+
+            const observer = new MutationObserver(function () {
+                const isShown = modal.style.display === 'block';
+                if (isShown) {
+                    document.documentElement.style.overflow = 'hidden';
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.documentElement.style.overflow = '';
+                    document.body.style.overflow = '';
+                }
+            });
+            observer.observe(modal, { attributes: true, attributeFilter: ['style'] });
+        })();
+    </script>
+
 
     <script src="js/script.js"></script>
 
