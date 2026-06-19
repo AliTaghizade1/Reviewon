@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="fa">
 <head>
     <meta charset="UTF-8">
-    <title>حساب کاربری</title>
+    <title>Profile</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -154,10 +154,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <h3>Plans</h3>
         <div class="plans-grid" style="justify-content: center;">
             <div class="plan-box" style="max-width: 720px;">
-                <h4 style="margin-top: 0;">Do you want to increase your bot\u2019s capabilities?</h4>
+                <h4 style="margin-top: 0;">
+                    Do you want to increase your account's capabilities?
+                </h4>
                 <p style="margin-bottom: 0;">
                     Send us a message at
-                    <a href="mailto:AliTaghizade.Contact@gmail.com" style="color: var(--primary); text-decoration: none; font-weight: 700;">
+                    <a href="mailto:AliTaghizade.Contact@gmail.com"
+                       class="btn-secondary"
+                       style="display: inline-block; margin-left: 0.75rem; padding: 0.55rem 1rem;">
                         AliTaghizade.Contact@gmail.com
                     </a>
                 </p>
@@ -170,3 +174,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="js/script.js"></script>
 </body>
 </html>
+
