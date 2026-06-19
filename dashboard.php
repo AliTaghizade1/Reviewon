@@ -74,7 +74,7 @@ usort($allSites, function($a, $b) {
         <div class="user-info" style="display: flex; align-items: center; gap: 1rem">
             <!--<span><?php echo htmlspecialchars($_SESSION['name'] ?? $userEmail); ?></span> -->
 
-            <a href="account.php" class="btn-primary">Account</a>
+            <a href="account.php" class="btn-primary">Profile</a>
             <a href="logout.php" class="btn-logout">Logout</a>
         </div>
     </header>
