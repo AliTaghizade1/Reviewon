@@ -70,7 +70,7 @@ usort($allSites, function($a, $b) {
 
 <body>
     <header class="dashboard-header">
-<div class="logo">Reviewon</div>
+        <div class="logo">Reviewon</div>
         <div class="user-info" style="display: flex; align-items: center; gap: 1rem">
             <!--<span><?php echo htmlspecialchars($_SESSION['name'] ?? $userEmail); ?></span> -->
 
@@ -176,16 +176,14 @@ usort($allSites, function($a, $b) {
     </div>
 
     <!-- Desktop-only Access Modal -->
-    <div id="desktopOnlyModal" class="modal" aria-hidden="true">
-        <div class="modal-content" style="max-width: 520px; text-align: center;">
+    <div id="desktopOnlyModal" class="modal" aria-hidden="true" style="display:none; overflow:hidden;">
+        <div class="modal-content" style="max-width: 520px; text-align: center; margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
             <span class="close" onclick="closeModal('desktopOnlyModal')" aria-label="Close">&times;</span>
-            <h2 style="margin-top: 0;">این بخش فقط در دسکتاپ در دسترس است</h2>
-            <p style="margin: 1rem 0 1.5rem; color: var(--text-secondary);">
-                به خاطر تجربه کاربری بهتر، Dashboard در موبایل و تبلت محدود شده است.
-            </p>
+            <h2 style="margin-top: 0;">Desktop only</h2>
+            <p style="margin: 1rem 0 1.5rem; color: var(--text-secondary);">This section is available only on desktop devices.</p>
 
             <div style="display:flex; justify-content:center; gap: 12px; flex-wrap: wrap;">
-                <a href="index.php" class="btn-secondary" style="text-decoration:none;">بازگشت به صفحه اصلی</a>
+                <a href="logout.php" class="btn-secondary" style="text-decoration:none;">Back to Home</a>
             </div>
         </div>
     </div>
