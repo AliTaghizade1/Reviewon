@@ -23,8 +23,8 @@ if (isset($_SESSION['user_id'])) {
 
     <section class="hero">
         <div class="hero-content fade-in-up">
-            <h1 class="hero-title">Unambiguous Feedback,<br>Faster Projects</h1>
-            <p class="hero-subtitle">Professional tool for collecting team, client &amp; colleague feedback with high accuracy and incredible speed.</p>
+            <h1 class="hero-title">Clear Feedback,<br>Faster Projects.</h1>
+            <p class="hero-subtitle">A feedback management platform for collecting and organizing website &amp; feedback to move projects forward faster and more clearly.</p>
             <div class="hero-stats">
                 <div class="stat-item">
                     <span class="stat-number" data-target="10000">0</span>

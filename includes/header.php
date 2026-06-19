@@ -30,9 +30,9 @@ if (!isset($_SESSION)) session_start();
                 </div>
                 <button type="submit" class="btn-primary">Login / Sign Up</button>
                 <p class="hint">No account? One will be created automatically.</p>
-                <p class="hint" style="margin-top: 0.75rem;">
+                <!--<p class="hint" style="margin-top: 0.75rem;">
                     <a href="#" id="showForgotPassword" class="auth-forgot-link">Forgot password?</a>
-                </p>
+                </p>-->
             </form>
         </div>
 
