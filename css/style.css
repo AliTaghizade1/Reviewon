@@ -1250,6 +1250,10 @@ iframe {
     gap: 1rem;
     margin-top: 1rem;
   }
+
+  .header-nav .nav-link{
+    display: none;
+  }
   
   .nav-cta {
     order: -1;
