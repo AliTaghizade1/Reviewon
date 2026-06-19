@@ -152,18 +152,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- 2) Plans -->
     <section class="plans-section">
         <h3>Plans</h3>
-        <div class="plans-grid">
-            <div class="plan-box">
-                <h4>Plan 1</h4>
-                <p>Coming soon...</p>
-            </div>
-            <div class="plan-box">
-                <h4>Plan 2</h4>
-                <p>Coming soon...</p>
-            </div>
-            <div class="plan-box">
-                <h4>Plan 3</h4>
-                <p>Coming soon...</p>
+        <div class="plans-grid" style="justify-content: center;">
+            <div class="plan-box" style="max-width: 720px;">
+                <h4 style="margin-top: 0;">Do you want to increase your bot\u2019s capabilities?</h4>
+                <p style="margin-bottom: 0;">
+                    Send us a message at
+                    <a href="mailto:AliTaghizade.Contact@gmail.com" style="color: var(--primary); text-decoration: none; font-weight: 700;">
+                        AliTaghizade.Contact@gmail.com
+                    </a>
+                </p>
             </div>
         </div>
     </section>
