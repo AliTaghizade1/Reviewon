@@ -53,12 +53,18 @@ if (!isset($_SESSION)) session_start();
 </div>
 
 <script>
-            // Hero CTA opens modal
-        document.getElementById('heroLoginBtn').onclick = () => {
-            if (typeof openModal === 'function') {
-                openModal('authModal');
-            } else {
-                document.getElementById('authModal').style.display = 'block';
-            }
-        };
+// Hero CTA opens modal (safe: wait until DOM is ready)
+window.addEventListener('DOMContentLoaded', () => {
+    const heroBtn = document.getElementById('heroLoginBtn');
+    if (!heroBtn) return;
+
+    heroBtn.addEventListener('click', () => {
+        if (typeof openModal === 'function') {
+            openModal('authModal');
+        } else {
+            const modal = document.getElementById('authModal');
+            if (modal) modal.style.display = 'block';
+        }
+    });
+});
 </script>
