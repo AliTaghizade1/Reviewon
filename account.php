@@ -153,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <section class="plans-section">
         <h3>Plans</h3>
         <div class="plans-grid" style="justify-content: center;">
-            <div class="plan-box" style="max-width: 720px;">
+            <div class="plan-box">
                 <h4 style="margin-top: 0;">
                     Do you want to increase your account's capabilities?
                 </h4>

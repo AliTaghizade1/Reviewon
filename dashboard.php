@@ -175,7 +175,42 @@ usort($allSites, function($a, $b) {
         </div>
     </div>
 
+    <!-- Desktop-only Access Modal -->
+    <div id="desktopOnlyModal" class="modal" aria-hidden="true">
+        <div class="modal-content" style="max-width: 520px; text-align: center;">
+            <span class="close" onclick="closeModal('desktopOnlyModal')" aria-label="Close">&times;</span>
+            <h2 style="margin-top: 0;">این بخش فقط در دسکتاپ در دسترس است</h2>
+            <p style="margin: 1rem 0 1.5rem; color: var(--text-secondary);">
+                به خاطر تجربه کاربری بهتر، Dashboard در موبایل و تبلت محدود شده است.
+            </p>
+
+            <div style="display:flex; justify-content:center; gap: 12px; flex-wrap: wrap;">
+                <a href="index.php" class="btn-secondary" style="text-decoration:none;">بازگشت به صفحه اصلی</a>
+            </div>
+        </div>
+    </div>
+
     <script src="js/script.js"></script>
+
+    <!-- Desktop-only modal for mobile/tablet -->
+    <script>
+        (function () {
+            // Detect mobile/tablet ONLY (no viewport width checks)
+            const ua = navigator.userAgent || '';
+            const isMobileUA = /Android|iPhone|iPad|iPod|Mobile|Tablet/i.test(ua);
+
+            if (!isMobileUA) return;
+
+            const modalId = 'desktopOnlyModal';
+            if (typeof openModal === 'function') {
+                openModal(modalId);
+            } else {
+                var el = document.getElementById(modalId);
+                if (el) el.style.display = 'block';
+            }
+        })();
+    </script>
 </body>
 
 </html>
+
