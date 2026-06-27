@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="<?= $lang === 'fa' ? 'fa' : 'en' ?>" dir="<?= $dir ?>">
 <head>
     <meta charset="UTF-8">
-    <title>Profile</title>
+    <title><?= t('nav_profile') ?></title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body dir="<?= $dir ?>">
@@ -78,9 +78,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="logo">Reviewon</div>
     <nav class="header-nav">
         <a href="<?= build_lang_switch_url() ?>" class="nav-link lang-switch" title="<?= t('nav_toggle_label') ?>"><?= t('nav_toggle') ?></a>
-        <a href="dashboard.php" class="btn-primary">Dashboard</a>
+        <a href="dashboard.php" class="btn-primary"><?= t('nav_dashboard') ?></a>
 <!--<a href="account.php" class="nav-link">Account</a> -->
-<a href="logout.php" class="btn-logout">Logout</a>
+<a href="logout.php" class="btn-logout"><?= t('nav_logout') ?></a>
 
     </nav>
 
@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="space-5"></div>
 <main class="dashboard-container">
-    <h2>Account</h2>
+    <h2><?= t('account_title') ?></h2>
 
     <?php if ($errorMsg): ?>
         <div class="alert danger"><?php echo $errorMsg; ?></div>
@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- 1) Personal information -->
     <section class="account-section">
-        <h3>Personal information</h3>
+        <h3><?= t('account_personal_info') ?></h3>
 
         <div class="account-form-wrapper">
             <!-- Change name form -->
@@ -109,41 +109,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="hidden" name="action" value="update_name">
 
                 <div class="form-group">
-                    <label for="full_name">Full name</label>
+                    <label for="full_name"><?= t('account_full_name_label') ?></label>
                     <input type="text" id="full_name" name="full_name"
                            value="<?php echo htmlspecialchars($user['name'] ?? ''); ?>" required>
                 </div>
 
                 <div class="form-actions" style="margin-top: 0.75rem;">
-                    <button type="submit" class="btn-primary">Save name</button>
+                    <button type="submit" class="btn-primary"><?= t('account_save_name') ?></button>
                 </div>
             </form>
 
             <div class="space-1"></div>
 
-            <h3>Change password</h3>
+            <h3><?= t('account_change_password') ?></h3>
 
             <!-- Change password form -->
             <form method="post" class="account-form">
                 <input type="hidden" name="action" value="update_password">
 
                 <div class="form-group">
-                    <label for="current_pass">Current password</label>
+                    <label for="current_pass"><?= t('account_current_password') ?></label>
                     <input type="password" id="current_pass" name="current_pass" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="new_pass">New password</label>
+                    <label for="new_pass"><?= t('account_new_password') ?></label>
                     <input type="password" id="new_pass" name="new_pass" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="new_pass_confirm">Confirm new password</label>
+                    <label for="new_pass_confirm"><?= t('account_confirm_password') ?></label>
                     <input type="password" id="new_pass_confirm" name="new_pass_confirm" required>
                 </div>
 
                 <div class="form-actions" style="margin-top: 0.75rem;">
-                    <button type="submit" class="btn-primary">Save password</button>
+                    <button type="submit" class="btn-primary"><?= t('account_save_password') ?></button>
                 </div>
             </form>
         </div>
@@ -153,14 +153,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- 2) Plans -->
     <section class="plans-section">
-        <h3>Plans</h3>
+        <h3><?= t('account_plans_title') ?></h3>
         <div class="plans-grid" style="justify-content: center;">
             <div class="plan-box">
                 <h4 style="margin-top: 0;">
-                    Do you want to increase your account's capabilities?
+                    <?= t('account_plan_text') ?>
                 </h4>
                 <p style="margin-bottom: 0;">
-                    Send us a message at
+                    <?= t('account_plan_message') ?>
                     <a href="mailto:AliTaghizade.Contact@gmail.com"
                        class="btn-secondary"
                        style="display: inline-block; margin-left: 0.75rem; padding: 0.55rem 1rem;">

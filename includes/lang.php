@@ -3,16 +3,29 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$lang = $_SESSION['lang'] ?? ($_GET['lang'] ?? 'en');
+$lang = 'en';
+if (isset($_GET['lang']) && in_array($_GET['lang'], ['en', 'fa'], true)) {
+    $lang = $_GET['lang'];
+} elseif (isset($_SESSION['lang']) && in_array($_SESSION['lang'], ['en', 'fa'], true)) {
+    $lang = $_SESSION['lang'];
+} elseif (isset($_COOKIE['reviewon_lang']) && in_array($_COOKIE['reviewon_lang'], ['en', 'fa'], true)) {
+    $lang = $_COOKIE['reviewon_lang'];
+}
+
 if (!in_array($lang, ['en', 'fa'], true)) {
     $lang = 'en';
 }
+
 $_SESSION['lang'] = $lang;
+setcookie('reviewon_lang', $lang, time() + 60 * 60 * 24 * 365, '/', '', false, true);
 $dir = $lang === 'fa' ? 'rtl' : 'ltr';
 
 $translations = [
     'nav_features' => ['en' => 'Features', 'fa' => 'ویژگی‌ها'],
     'nav_login' => ['en' => 'Login', 'fa' => 'ورود'],
+    'nav_dashboard' => ['en' => 'Dashboard', 'fa' => 'داشبورد'],
+    'nav_profile' => ['en' => 'Profile', 'fa' => 'پروفایل'],
+    'nav_logout' => ['en' => 'Logout', 'fa' => 'خروج'],
     'nav_toggle' => ['en' => 'فارسی', 'fa' => 'English'],
     'nav_toggle_label' => ['en' => 'Switch to Persian', 'fa' => 'تغییر به انگلیسی'],
     'auth_welcome' => ['en' => 'Welcome', 'fa' => 'خوش آمدید'],
@@ -44,8 +57,42 @@ $translations = [
     'feature_3_desc' => ['en' => 'Easy sharing & team work on feedback.', 'fa' => 'اشتراک‌گذاری و همکاری تیمی روی بازخوردها به‌سادگی.'],
     'feature_4_title' => ['en' => 'Secure & Private', 'fa' => 'امن و محرمانه'],
     'feature_4_desc' => ['en' => 'Your data fully secure and confidential.', 'fa' => 'اطلاعات شما کاملاً امن و محرمانه است.'],
+    'site_title' => ['en' => 'Reviewon - Professional Feedback Platform', 'fa' => 'Reviewon - پلتفرم بازخورد حرفه‌ای'],
     'privacy_title' => ['en' => 'Privacy Policy', 'fa' => 'سیاست حریم خصوصی'],
     'terms_title' => ['en' => 'Terms of Service', 'fa' => 'شرایط استفاده از خدمات'],
+    'dashboard_title' => ['en' => 'Dashboard', 'fa' => 'داشبورد'],
+    'dashboard_search_placeholder' => ['en' => 'Search...', 'fa' => 'جستجو...'],
+    'dashboard_new_site' => ['en' => 'New Site', 'fa' => 'سایت جدید'],
+    'dashboard_no_sites' => ['en' => 'No sites yet. Click "New Site" to start.', 'fa' => 'هنوز سایتی وجود ندارد. برای شروع روی «سایت جدید» کلیک کنید.'],
+    'dashboard_open' => ['en' => 'Open', 'fa' => 'باز کردن'],
+    'dashboard_share' => ['en' => 'Share Access', 'fa' => 'اشتراک‌گذاری دسترسی'],
+    'dashboard_delete' => ['en' => 'Delete', 'fa' => 'حذف'],
+    'dashboard_share_modal_title' => ['en' => 'Share Access', 'fa' => 'اشتراک‌گذاری دسترسی'],
+    'dashboard_share_email_label' => ['en' => 'Add Collaborator (Email)', 'fa' => 'افزودن همکاری‌کننده (ایمیل)'],
+    'dashboard_share_email_placeholder' => ['en' => 'colleague@example.com', 'fa' => 'colleague@example.com'],
+    'dashboard_share_button' => ['en' => 'Grant Access', 'fa' => 'اعطای دسترسی'],
+    'dashboard_access_list_title' => ['en' => 'People with access', 'fa' => 'افراد دارای دسترسی'],
+    'dashboard_access_loading' => ['en' => 'Loading...', 'fa' => 'در حال بارگذاری...'],
+    'dashboard_add_site_title' => ['en' => 'Add New Site', 'fa' => 'افزودن سایت جدید'],
+    'dashboard_site_url_label' => ['en' => 'Website URL', 'fa' => 'آدرس وب‌سایت'],
+    'dashboard_site_url_placeholder' => ['en' => 'example.com', 'fa' => 'example.com'],
+    'dashboard_create_site' => ['en' => 'Create', 'fa' => 'ایجاد'],
+    'dashboard_delete_confirm_title' => ['en' => 'Delete Site?', 'fa' => 'حذف سایت؟'],
+    'dashboard_delete_confirm_text' => ['en' => 'Are you sure you want to delete this site? All comments and access permissions will be permanently removed.', 'fa' => 'آیا مطمئن هستید که می‌خواهید این سایت را حذف کنید؟ همه نظرات و مجوزهای دسترسی برای همیشه حذف خواهند شد.'],
+    'dashboard_cancel' => ['en' => 'Cancel', 'fa' => 'لغو'],
+    'dashboard_confirm_delete' => ['en' => 'Yes, Delete', 'fa' => 'بله، حذف شود'],
+    'account_title' => ['en' => 'Account', 'fa' => 'حساب کاربری'],
+    'account_personal_info' => ['en' => 'Personal information', 'fa' => 'اطلاعات شخصی'],
+    'account_full_name_label' => ['en' => 'Full name', 'fa' => 'نام کامل'],
+    'account_save_name' => ['en' => 'Save name', 'fa' => 'ذخیره نام'],
+    'account_change_password' => ['en' => 'Change password', 'fa' => 'تغییر رمز عبور'],
+    'account_current_password' => ['en' => 'Current password', 'fa' => 'رمز عبور فعلی'],
+    'account_new_password' => ['en' => 'New password', 'fa' => 'رمز عبور جدید'],
+    'account_confirm_password' => ['en' => 'Confirm new password', 'fa' => 'تأیید رمز عبور جدید'],
+    'account_save_password' => ['en' => 'Save password', 'fa' => 'ذخیره رمز عبور'],
+    'account_plans_title' => ['en' => 'Plans', 'fa' => 'پلن‌ها'],
+    'account_plan_text' => ['en' => 'Do you want to increase your account\'s capabilities?', 'fa' => 'آیا می‌خواهید قابلیت‌های حساب کاربری خود را افزایش دهید؟'],
+    'account_plan_message' => ['en' => 'Send us a message at', 'fa' => 'برای ما پیام بفرستید در'],
     'privacy_1_title' => ['en' => '1. Information We Collect', 'fa' => '1. اطلاعاتی که جمع‌آوری می‌کنیم'],
     'privacy_1_text' => ['en' => '• User account details (email, password, and any profile information).<br>• Comments, feedback, and any uploaded content.<br>• Usage data such as IP address, device type, and browser details for analytical purposes.', 'fa' => '• جزئیات حساب کاربری (ایمیل، رمز عبور و هرگونه اطلاعات پروفایل).<br>• نظرات، بازخورد و هر محتوای بارگذاری‌شده.<br>• داده‌های استفاده مانند آدرس IP، نوع دستگاه و جزئیات مرورگر برای اهداف تحلیلی.'],
     'privacy_2_title' => ['en' => '2. How We Use Information', 'fa' => '2. نحوه استفاده از اطلاعات'],

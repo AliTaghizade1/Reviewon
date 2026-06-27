@@ -65,7 +65,7 @@ usort($allSites, function($a, $b) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Reviewon</title>
+    <title><?= t('dashboard_title') ?> - Reviewon</title>
     <link rel="stylesheet" href="css/style.css?v=<?php echo filemtime(__DIR__ . '/css/style.css'); ?>">
 </head>
 
@@ -75,8 +75,8 @@ usort($allSites, function($a, $b) {
         <div class="user-info" style="display: flex; align-items: center; gap: 1rem">
             <!--<span><?php echo htmlspecialchars($_SESSION['name'] ?? $userEmail); ?></span> -->
             <a href="<?= build_lang_switch_url() ?>" class="nav-link lang-switch" title="<?= t('nav_toggle_label') ?>"><?= t('nav_toggle') ?></a>
-            <a href="account.php" class="btn-primary">Profile</a>
-            <a href="logout.php" class="btn-logout">Logout</a>
+            <a href="account.php" class="btn-primary"><?= t('nav_profile') ?></a>
+            <a href="logout.php" class="btn-logout"><?= t('nav_logout') ?></a>
         </div>
     </header>
 
@@ -84,14 +84,14 @@ usort($allSites, function($a, $b) {
         <div class="space-5"></div>
         <div class="actions">
             <div class="search-container">
-                <input type="text" id="siteSearch" placeholder="Search..." class="search-input">
+                <input type="text" id="siteSearch" placeholder="<?= t('dashboard_search_placeholder') ?>" class="search-input">
             </div>
-            <button id="newSiteBtn" class="btn-primary">New Site</button>
+            <button id="newSiteBtn" class="btn-primary"><?= t('dashboard_new_site') ?></button>
         </div>
 
         <div class="site-list">
             <?php if (empty($allSites)): ?>
-                <p>No sites yet. Click "New Site" to start.</p>
+                <p><?= t('dashboard_no_sites') ?></p>
             <?php else: ?>
                 <?php foreach ($allSites as $site): ?>
                     <div class="site-card">
@@ -114,10 +114,10 @@ usort($allSites, function($a, $b) {
                         </div>
                         <h3 title="<?php echo htmlspecialchars($site['url']); ?>"><?php echo htmlspecialchars($displayName); ?></h3>
                         <div class="site-actions">
-                            <a href="tool.php?id=<?php echo $site['id']; ?>" class="btn-secondary">Open</a>
+                            <a href="tool.php?id=<?php echo $site['id']; ?>" class="btn-secondary"><?= t('dashboard_open') ?></a>
                             <?php if ($site['owner_id'] === $userId): ?>
-                                <button class="btn-share btn-secondary" style="cursor: pointer !important;" data-id="<?php echo $site['id']; ?>">Share Access</button>
-                                <button class="btn-delete btn-secondary" style="cursor: pointer !important;" data-id="<?php echo $site['id']; ?>">Delete</button>
+                                <button class="btn-share btn-secondary" style="cursor: pointer !important;" data-id="<?php echo $site['id']; ?>"><?= t('dashboard_share') ?></button>
+                                <button class="btn-delete btn-secondary" style="cursor: pointer !important;" data-id="<?php echo $site['id']; ?>"><?= t('dashboard_delete') ?></button>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -129,20 +129,20 @@ usort($allSites, function($a, $b) {
         <div id="shareModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
-                <h2>Share Access</h2>
+                <h2><?= t('dashboard_share_modal_title') ?></h2>
                 <form id="shareForm" style="margin-bottom: 1.5rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
                     <input type="hidden" id="shareSiteId" name="siteId">
                     <div class="form-group">
-                        <label for="shareEmail">Add Collaborator (Email)</label>
-                        <input type="email" id="shareEmail" name="email" placeholder="colleague@example.com" required>
+                        <label for="shareEmail"><?= t('dashboard_share_email_label') ?></label>
+                        <input type="email" id="shareEmail" name="email" placeholder="<?= t('dashboard_share_email_placeholder') ?>" required>
                     </div>
-                    <button type="submit" class="btn-primary">Grant Access</button>
+                    <button type="submit" class="btn-primary"><?= t('dashboard_share_button') ?></button>
                 </form>
 
                 <div class="access-list-container">
-                    <h4>People with access</h4>
+                    <h4><?= t('dashboard_access_list_title') ?></h4>
                     <ul id="accessList" class="access-list">
-                        <li>Loading...</li>
+                        <li><?= t('dashboard_access_loading') ?></li>
                     </ul>
                 </div>
             </div>
@@ -153,13 +153,13 @@ usort($allSites, function($a, $b) {
     <div id="newSiteModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Add New Site</h2>
+            <h2><?= t('dashboard_add_site_title') ?></h2>
             <form id="newSiteForm" action="create_site.php" method="POST">
                 <div class="form-group">
                     <label for="siteUrl">Website URL</label>
                     <input type="text" id="siteUrl" name="url" placeholder="example.com" required>
                 </div>
-                <button type="submit" class="btn-primary">Create</button>
+                <button type="submit" class="btn-primary"><?= t('dashboard_create_site') ?></button>
             </form>
         </div>
     </div>
@@ -167,11 +167,11 @@ usort($allSites, function($a, $b) {
     <!-- Modal for Delete Confirmation -->
     <div id="deleteModal" class="modal">
         <div class="modal-content" style="max-width: 400px; text-align: center;">
-            <h3 style="color: #dc2626; margin-top: 0;">Delete Site?</h3>
-            <p>Are you sure you want to delete this site? All comments and access permissions will be permanently removed.</p>
+            <h3 style="color: #dc2626; margin-top: 0;"><?= t('dashboard_delete_confirm_title') ?></h3>
+            <p><?= t('dashboard_delete_confirm_text') ?></p>
             <div class="modal-actions" style="margin-top: 20px; display: flex; justify-content: center; gap: 10px;">
-                <button id="cancelDeleteBtn" class="btn-secondary" style="cursor: pointer !important;">Cancel</button>
-                <button id="confirmDeleteBtn" class="btn-primary" style="background-color: #dc2626; border-color: #dc2626;">Yes, Delete</button>
+                <button id="cancelDeleteBtn" class="btn-secondary" style="cursor: pointer !important;"><?= t('dashboard_cancel') ?></button>
+                <button id="confirmDeleteBtn" class="btn-primary" style="background-color: #dc2626; border-color: #dc2626;"><?= t('dashboard_confirm_delete') ?></button>
             </div>
         </div>
     </div>
