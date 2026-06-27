@@ -11,7 +11,7 @@ include_once __DIR__ . '/includes/lang.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reviewon - Professional Feedback Platform</title>
+<title><?= t('site_title') ?></title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/slideDown.css">
 </head>

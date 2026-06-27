@@ -23,6 +23,7 @@ $dir = $lang === 'fa' ? 'rtl' : 'ltr';
 $translations = [
     'nav_features' => ['en' => 'Features', 'fa' => 'ویژگی‌ها'],
     'nav_login' => ['en' => 'Login', 'fa' => 'ورود'],
+    'nav_home' => ['en' => 'Back to home', 'fa' => 'بازگشت به صفحه اصلی'],
     'nav_dashboard' => ['en' => 'Dashboard', 'fa' => 'داشبورد'],
     'nav_profile' => ['en' => 'Profile', 'fa' => 'پروفایل'],
     'nav_logout' => ['en' => 'Logout', 'fa' => 'خروج'],
@@ -60,6 +61,8 @@ $translations = [
     'site_title' => ['en' => 'Reviewon - Professional Feedback Platform', 'fa' => 'Reviewon - پلتفرم بازخورد حرفه‌ای'],
     'privacy_title' => ['en' => 'Privacy Policy', 'fa' => 'سیاست حریم خصوصی'],
     'terms_title' => ['en' => 'Terms of Service', 'fa' => 'شرایط استفاده از خدمات'],
+    'reset_title' => ['en' => 'Set New Password', 'fa' => 'تنظیم رمز عبور جدید'],
+    'reset_confirm' => ['en' => 'Confirm', 'fa' => 'تأیید'],
     'dashboard_title' => ['en' => 'Dashboard', 'fa' => 'داشبورد'],
     'dashboard_search_placeholder' => ['en' => 'Search...', 'fa' => 'جستجو...'],
     'dashboard_new_site' => ['en' => 'New Site', 'fa' => 'سایت جدید'],

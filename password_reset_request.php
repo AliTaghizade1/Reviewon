@@ -1,5 +1,6 @@
 <?php
 session_start();
+include_once __DIR__ . '/includes/lang.php';
 
 require 'config/db.php';
 require 'config/app.php';
@@ -74,16 +75,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= $lang === 'fa' ? 'fa' : 'en' ?>" dir="<?= $dir ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body dir="<?= $dir ?>">
 <div class="dashboard-container" style="max-width:720px; margin: 4rem auto;">
-    <h2>Forgot Password</h2>
+    <h2><?= t('auth_forgot_title') ?></h2>
 
     <?php if (!empty($message)): ?>
         <div class="alert success"><?php echo h($message); ?></div>
@@ -91,13 +92,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="POST" action="password_reset_request.php" class="account-form" style="margin-top: 1.5rem;">
         <div class="form-group">
-            <label for="email">Your email</label>
-            <input type="email" id="email" name="email" placeholder="you@example.com" required>
+            <label for="email"><?= t('auth_login_label') ?></label>
+            <input type="email" id="email" name="email" placeholder="<?= t('auth_placeholder_email') ?>" required>
         </div>
-        <button type="submit" class="btn-primary" style="margin-top: 1rem;">Send reset link</button>
+        <button type="submit" class="btn-primary" style="margin-top: 1rem;"><?= t('auth_forgot_submit') ?></button>
     </form>
 
-    <p style="margin-top: 1rem;"><a href="index.php">Back to home</a></p>
+    <p style="margin-top: 1rem;"><a href="index.php"><?= t('nav_home') ?></a></p>
 </div>
 </body>
 </html>

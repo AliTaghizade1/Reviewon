@@ -1,5 +1,6 @@
 <?php
 session_start();
+include_once __DIR__ . '/includes/lang.php';
 
 require 'config/db.php';
 
@@ -55,16 +56,16 @@ if ($token) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= $lang === 'fa' ? 'fa' : 'en' ?>" dir="<?= $dir ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body dir="<?= $dir ?>">
 <div class="dashboard-container" style="max-width:720px; margin: 4rem auto;">
-    <h2>Set New Password</h2>
+    <h2><?= t('reset_title') ?></h2>
 
     <?php if (!empty($error)): ?>
         <div class="alert danger"><?php echo h($error); ?></div>
@@ -79,20 +80,20 @@ if ($token) {
             <input type="hidden" name="token" value="<?php echo h($token); ?>">
 
             <div class="form-group">
-                <label for="new_pass">New password</label>
+                <label for="new_pass"><?= t('account_new_password') ?></label>
                 <input type="password" id="new_pass" name="new_pass" required>
             </div>
 
             <div class="form-group">
-                <label for="new_pass_confirm">Confirm new password</label>
+                <label for="new_pass_confirm"><?= t('account_confirm_password') ?></label>
                 <input type="password" id="new_pass_confirm" name="new_pass_confirm" required>
             </div>
 
-            <button type="submit" class="btn-primary" style="margin-top: 1rem;">Confirm</button>
+            <button type="submit" class="btn-primary" style="margin-top: 1rem;"><?= t('reset_confirm') ?></button>
         </form>
     <?php endif; ?>
 
-    <p style="margin-top: 1rem;"><a href="index.php">Back to home</a></p>
+    <p style="margin-top: 1rem;"><a href="index.php"><?= t('nav_home') ?></a></p>
 </div>
 </body>
 </html>
