@@ -17,7 +17,10 @@ function proxy_endpoint(): string
 function proxy_error_page(string $message): void
 {
     http_response_code(502);
-    echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;padding:24px;color:#1f2937}code{background:#f3f4f6;padding:2px 6px;border-radius:4px}</style></head><body>';
+echo '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+    . '<link rel="stylesheet" href="/Reviewon/css/style.css">'
+    . '</head><body>';
+
     echo '<h2>Could not load this website</h2>';
     echo '<p>' . htmlspecialchars($message, ENT_QUOTES, 'UTF-8') . '</p>';
     echo '</body></html>';

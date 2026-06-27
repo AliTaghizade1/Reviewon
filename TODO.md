@@ -1,5 +1,10 @@
-- [x] Update account.php: replace Plans (Plan 1/2/3) with single English message and clickable email mailto link
-- [x] Adjust text/button style to match request (account capabilities + button-like email)
-- [ ] Manual test: open account.php and verify layout + mail link
+# TODO
 
-
+- [x] بررسی اینکه فونت از طریق `css/style.css` تعریف شده است.
+- [ ] بررسی کل صفحات PHP پروژه و اطمینان از اینکه همه آن‌ها `css/style.css` را load می‌کنند.
+- [ ] اطمینان از اینکه هیچ‌جای پروژه فونت متفاوت یا `font-family` override نشده است (به‌خصوص در iframe/پاپ‌آپ‌ها).
+- [ ] اعمال اصلاحات لازم: اگر صفحه‌ای `css/style.css` را load نمی‌کند، آن را اضافه کنیم.
+- [ ] اعمال اصلاحات لازم: افزودن rule سراسری برای همه عناصر (`*`) تا حتماً از فونت Vazir استفاده شود.
+- [x] تست/بررسی به صورت static با چک لینک `css/style.css` در اکثر صفحات انجام شد.
+- [ ] تست سریع با باز کردن صفحات در مرورگر و بررسی اینکه فونت یکنواخت است.
+- [ ] در صورت وجود صفحات دیگر خارج از لیست فعلی (مثلاً فایل‌های جدید)، دوباره چک شود که همه `css/style.css` را load می‌کنند.
