@@ -4,10 +4,10 @@ if (isset($_SESSION['user_id'])) {
     header("Location: dashboard.php");
     exit;
 }
-
+include_once __DIR__ . '/includes/lang.php';
 ?>
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="<?= $lang === 'fa' ? 'fa' : 'en' ?>" dir="<?= $dir ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +15,7 @@ if (isset($_SESSION['user_id'])) {
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/slideDown.css">
 </head>
-<body>
+<body dir="<?= $dir ?>">
     <canvas id="particles-canvas" aria-hidden="true"></canvas>
 
     <?php include 'includes/header.php'; ?>
@@ -23,50 +23,50 @@ if (isset($_SESSION['user_id'])) {
 
     <section class="hero">
         <div class="hero-content fade-in-up">
-            <h1 class="hero-title">Clear Feedback,<br>Faster Projects.</h1>
-            <p class="hero-subtitle">A feedback management platform for collecting and organizing website &amp; feedback to move projects forward faster and more clearly.</p>
+            <h1 class="hero-title"><?= t('hero_title') ?></h1>
+            <p class="hero-subtitle"><?= t('hero_subtitle') ?></p>
             <div class="hero-stats">
                 <div class="stat-item">
                     <span class="stat-number" data-target="10000">0</span>
-                    <span class="stat-label">Feedbacks Collected</span>
+                    <span class="stat-label"><?= t('hero_stat_1_label') ?></span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number" data-target="500">0</span>
-                    <span class="stat-label">Active Projects</span>
+                    <span class="stat-label"><?= t('hero_stat_2_label') ?></span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number" data-target="2500">0</span>
-                    <span class="stat-label">Happy Users</span>
+                    <span class="stat-label"><?= t('hero_stat_3_label') ?></span>
                 </div>
             </div>
-<button class="btn-primary hero-cta" id="heroLoginBtn">Get Started - Free</button>
+<button class="btn-primary hero-cta" id="heroLoginBtn"><?= t('hero_cta') ?></button>
         </div>
     </section>
 
     <section id="features" class="features-section">
         <div class="container">
-            <h2 class="section-title scroll-reveal">Key Features</h2>
+            <h2 class="section-title scroll-reveal"><?= t('features_title') ?></h2>
             <div class="features-grid">
                 <div class="feature-card scroll-reveal">
                     <div class="feature-icon"> <img src="image/flash.svg" alt="image" class="icon-feature"> </div>
-                    <h3>Instant Feedback</h3>
-                    <p>Click and feedback appears instantly. No delay, no complexity.</p>
+                    <h3><?= t('feature_1_title') ?></h3>
+                    <p><?= t('feature_1_desc') ?></p>
                 </div>
                 <div class="feature-card fade-in-up" style="animation-delay: 0.1s;">
                     <div class="feature-icon"> <img src="image/monitor-mobbile.svg" alt="image" class="icon-feature"> </div>
-                    <h3>Fully Responsive</h3>
-                    <p>Mobile, tablet, desktop. Feedback anywhere.</p>
+                    <h3><?= t('feature_2_title') ?></h3>
+                    <p><?= t('feature_2_desc') ?></p>
                 </div>
                 <div class="feature-card fade-in-up" style="animation-delay: 0.2s;">
                     <div class="feature-icon"> <img src="image/profile-2user.svg" alt="image" class="icon-feature"> </div>
-                    <h3>Team Collaboration</h3>
-                    <p>Easy sharing &amp; team work on feedback.</p>
+                    <h3><?= t('feature_3_title') ?></h3>
+                    <p><?= t('feature_3_desc') ?></p>
                 </div>
                 <div></div>
                 <div class="feature-card fade-in-up" style="animation-delay: 0.3s;">
                     <div class="feature-icon"> <img src="image/shield-tick.svg" alt="image" class="icon-feature"> </div>
-                    <h3>Secure & Private</h3>
-                    <p>Your data fully secure and confidential.</p>
+                    <h3><?= t('feature_4_title') ?></h3>
+                    <p><?= t('feature_4_desc') ?></p>
                 </div>
             </div>
         </div>

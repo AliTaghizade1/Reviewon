@@ -1,5 +1,6 @@
 <?php
 session_start();
+include_once __DIR__ . '/includes/lang.php';
 require 'config/db.php';
 
 // بررسی لاگین بودن
@@ -59,7 +60,7 @@ usort($allSites, function($a, $b) {
 });
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= $lang === 'fa' ? 'fa' : 'en' ?>" dir="<?= $dir ?>">
 
 <head>
     <meta charset="UTF-8">
@@ -68,12 +69,12 @@ usort($allSites, function($a, $b) {
     <link rel="stylesheet" href="css/style.css?v=<?php echo filemtime(__DIR__ . '/css/style.css'); ?>">
 </head>
 
-<body>
+<body dir="<?= $dir ?>">
     <header class="dashboard-header">
         <div class="logo">Reviewon</div>
         <div class="user-info" style="display: flex; align-items: center; gap: 1rem">
             <!--<span><?php echo htmlspecialchars($_SESSION['name'] ?? $userEmail); ?></span> -->
-
+            <a href="<?= build_lang_switch_url() ?>" class="nav-link lang-switch" title="<?= t('nav_toggle_label') ?>"><?= t('nav_toggle') ?></a>
             <a href="account.php" class="btn-primary">Profile</a>
             <a href="logout.php" class="btn-logout">Logout</a>
         </div>

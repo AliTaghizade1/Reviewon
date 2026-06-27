@@ -1000,6 +1000,16 @@ iframe {
   color: var(--primary);
 }
 
+.lang-switch {
+  border: 1px solid rgba(37, 99, 235, 0.18);
+  background: rgba(255, 255, 255, 0.65);
+  font-weight: 600;
+}
+
+.lang-switch:hover {
+  background: rgba(37, 99, 235, 0.12);
+}
+
 .nav-cta {
   margin-left: 1rem !important;
   font-size: 1rem;

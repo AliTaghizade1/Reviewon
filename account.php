@@ -5,6 +5,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 session_start();
+include_once __DIR__ . '/includes/lang.php';
 
 require 'config/db.php';          // اتصال PDO
 
@@ -66,16 +67,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 ?>
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="<?= $lang === 'fa' ? 'fa' : 'en' ?>" dir="<?= $dir ?>">
 <head>
     <meta charset="UTF-8">
     <title>Profile</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body dir="<?= $dir ?>">
 <header>
     <div class="logo">Reviewon</div>
     <nav class="header-nav">
+        <a href="<?= build_lang_switch_url() ?>" class="nav-link lang-switch" title="<?= t('nav_toggle_label') ?>"><?= t('nav_toggle') ?></a>
         <a href="dashboard.php" class="btn-primary">Dashboard</a>
 <!--<a href="account.php" class="nav-link">Account</a> -->
 <a href="logout.php" class="btn-logout">Logout</a>

@@ -1,14 +1,15 @@
 <?php
 // header.php
-// اطمینان از شروع session برای نمایش دکمه‌های شرطی
 if (!isset($_SESSION)) session_start();
+include_once __DIR__ . '/lang.php';
 ?>
 <header>
 <div class="logo">Reviewon</div>
     <nav class="header-nav">
-        <a href="index.php#features" class="nav-link">Features</a>
+        <a href="index.php#features" class="nav-link"><?= t('nav_features') ?></a>
+        <a href="<?= build_lang_switch_url() ?>" class="nav-link lang-switch" title="<?= t('nav_toggle_label') ?>" data-lang-switch><?= t('nav_toggle') ?></a>
         <!--<a href="#why-us" class="nav-link">Why Us</a> -->
-        <button id="loginBtn" class="btn-primary nav-cta">Login</button>
+        <button id="loginBtn" class="btn-primary nav-cta"><?= t('nav_login') ?></button>
     </nav>
 </header>
 
