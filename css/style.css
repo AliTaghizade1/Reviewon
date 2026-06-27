@@ -259,6 +259,7 @@ header {
 /* Buttons (Glassmorphism + Pulse) */
 .btn-primary {
   background: var(--glass-bg);
+  font-family: 'Vazir', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
   backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
   color: var(--text-primary);
