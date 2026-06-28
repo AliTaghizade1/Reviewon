@@ -27,7 +27,7 @@ $translations = [
     'nav_dashboard' => ['en' => 'Dashboard', 'fa' => 'داشبورد'],
     'nav_profile' => ['en' => 'Profile', 'fa' => 'پروفایل'],
     'nav_logout' => ['en' => 'Logout', 'fa' => 'خروج'],
-    'nav_toggle' => ['en' => 'فارسی', 'fa' => 'English'],
+    'nav_toggle' => ['en' => 'FA ↔ EN', 'EN ↔ FA' => 'English'],
     'nav_toggle_label' => ['en' => 'Switch to Persian', 'fa' => 'تغییر به انگلیسی'],
     'auth_welcome' => ['en' => 'Welcome', 'fa' => 'خوش آمدید'],
     'auth_login_label' => ['en' => 'Email', 'fa' => 'ایمیل'],
